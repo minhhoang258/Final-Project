@@ -1,12 +1,8 @@
 #A. Liệt kê các thư viện để sử dụng
 
 # Các thư viện được dùng để train data
-import os
-import warnings
 import keras
-import matplotlib.pyplot as plt
-import matplotlib.style as style
-import pandas as pd
+import numpy as np
 from PIL import Image, ImageFile
 from keras import models, layers, optimizers
 from keras.applications import VGG16
@@ -22,10 +18,8 @@ from sklearn.metrics import classification_report, confusion_matrix
 # Các thư viện được dùng để làm giao diện + tính năng phần mềm
 import copy
 import cv2
-import numpy as np
 from keras.models import load_model
 import time
-ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # Thêm thư viện tkinter để làm giao diện ngoài
 
@@ -57,9 +51,8 @@ cu_chi_names = {0: 'I will try harder!',
                  4: 'Please, stop!'}
 
 # Gán các biến truy cập vào vào đường dẫn
-anh_path = 'AI_project'
+anh_path = '/content/drive/MyDrive/AI_project'
 models_path = 'models/File_train.hdf5'
-
 rgb = False
 Sizeanh = 224
 
@@ -85,7 +78,7 @@ def xu_li_du_lieu(X_data, y_data):
     return X_data, y_data
 
 # Tạo hàm duyệt thư mục ảnh dùng để train
-def walk_file_tree(anh_path):
+def duyetdata(anh_path):
     X_data = []
     y_data = []
     for directory, subdirectories, files in os.walk(anh_path):
@@ -107,7 +100,7 @@ def walk_file_tree(anh_path):
 #2 XỬ LÝ DATA VÀ TRAIN DATA
 
 # Load dữ liệu vào X, Y đồng thời phân chia dữ liệu theo tỉ lệ train:test là 70:30
-X_data, y_data = walk_file_tree(anh_path)
+X_data, y_data = duyetdata(anh_path)
 X_train, X_test, y_train, y_test = train_test_split(X_data, y_data, test_size = 0.3, random_state=12, stratify=y_data)
 
 # Đặt các checkpoint để lưu lại model tốt nhất
@@ -148,12 +141,12 @@ for layer in base_model.layers:
     layer.trainable = False
 
 model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
-model.fit(X_train, y_train, epochs=50, batch_size=64, validation_data=(X_test, y_test), verbose=1, 
-    callbacks=[early_stopping, model_checkpoint
+model.fit(X_train, y_train, epochs=300, batch_size=64, validation_data=(X_test, y_test), verbose=1, 
+    callbacks=[early_stopping, model_checkpoint])
 
 # Lưu lại Model đã train
 
-model.save('Data_train.h5')'''
+model.save('/content/drive/MyDrive/File_train/Data_train.h5')'''
 
 #C. Thiết kế giao diện + tính năng phần mềm
 
@@ -387,4 +380,4 @@ class Giao_dien_ban_dau:
 # Duy trì cửa sổ, hiển thị bắt đầu từ giao diện menu
 root = Tk()
 st = Giao_dien_ban_dau(root)
-root.mainloop()     
+root.mainloop()         
